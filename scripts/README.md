@@ -1,54 +1,51 @@
-# User.csv Error Analysis Scripts
+# Skripte zur Fehleranalyse von user.csv
 
-This directory contains scripts for analyzing and documenting errors in the `data/user.csv` file.
+Dieses Verzeichnis enthält Skripte zur Analyse und Dokumentation von Fehlern in der Datei `data/user.csv`.
 
-## Scripts
+## Skripte
 
-1. **find_user_csv_errors.py** - Initial comprehensive error detection script
-   - Analyzes unrealistic ages
-   - Checks date ordering
-   - Validates booking/destination consistency
-   - Searches for typos in string columns
+1. **find_user_csv_errors.py** - Umfassendes Fehlererkennungsskript
+   - Analysiert unrealistische Altersangaben
+   - Überprüft Datumsreihenfolge
+   - Validiert Konsistenz von Buchung/Ziel
+   - Sucht nach Tippfehlern in Textspalten
 
-2. **create_error_summary.py** - Creates detailed Russian-language error summary
-   - Provides specific examples with user IDs
-   - Includes recommendations for fixes
-   - Generates comprehensive report
+## Ausgabedateien
 
-## Output Files
+Alle Analyseergebnisse werden im Unterverzeichnis `outputs/` gespeichert:
 
-All analysis results are saved in the `outputs/` subdirectory:
+- **user_csv_fehler_bericht.md** - Umfassender Bericht in Markdown-Format (Deutsch) ⭐ **HAUPTBERICHT**
 
-- **user_csv_errors.txt** - Full technical analysis (English)
-- **user_csv_errors_summary.txt** - Detailed summary (Russian)
-- **FINAL_REPORT_RU.txt** - Comprehensive final report (Russian) ⭐ **MAIN REPORT**
+## Schnellzusammenfassung der Ergebnisse
 
-## Quick Summary of Findings
+### Gefundene Fehler:
+1. **Altersfehler**: 3.511 Einträge mit unrealistischem Alter
+   - 2.701 Einträge mit Alter < 18 oder > 90
+   - 2.771 Einträge mit Alter > 80 (zur Information)
+   - 781 Einträge mit Alter > 120
+2. **Datumsreihenfolgefehler**: 29 Einträge (nach Korrektur des Zeitstempelproblems)
+3. **Buchungskonsistenz**: ✅ Keine Fehler gefunden
+4. **Tippfehler in Texten**: ✅ Keine Tippfehler gefunden
 
-### Errors Found:
-1. **Age errors**: 3,103 records with unrealistic ages
-2. **Date ordering errors**: 234,703 records (mostly due to time format issue)
-3. **Booking consistency**: ✅ No errors found
-4. **String typos**: ✅ No typos found
+### Hauptänderungen:
+- **Altersgrenze** von > 100 auf > 90 gesenkt
+- **Datumsvergleiche** werden nur auf Basis des Datums ohne Zeitstempel durchgeführt
+- Dies behebt das Problem mit `account_created_date` (00:00:00 Uhrzeit)
+- Variable `df` wurde in `df_user` umbenannt
 
-### Main Issue:
-The `account_created_date` column stores dates WITHOUT time (00:00:00), while `first_active_timestamp` contains precise timestamps. This causes false positives when comparing dates.
+### Empfehlungen:
+1. Altersdaten bereinigen (unrealistische Werte durch NaN ersetzen)
+2. Für die 29 Einträge mit account_created_date > first_booking_date Quelldaten überprüfen
 
-### Recommendations:
-1. Store `account_created_date` with precise time
-2. Clean age data (replace unrealistic values with NaN)
-3. For the 29 records where account_created_date > first_booking_date, investigate source data
+## Verwendung
 
-## Usage
-
-Run the scripts from the project root directory:
+Skripte aus dem Projektstammverzeichnis ausführen:
 
 ```bash
 cd /home/runner/work/dscb310-projekt/dscb310-projekt
 python scripts/find_user_csv_errors.py
-python scripts/create_error_summary.py
 ```
 
-## Integration with EDA.py
+## Integration mit EDA.py
 
-The finalized analysis code has been added to `EDA.py` in the project root, following the Jupytext percent format. This allows the analysis to be run as a Jupyter notebook.
+Der finalisierte Analysecode wurde zu `EDA.py` im Projektstammverzeichnis hinzugefügt und folgt dem Jupytext-Prozentformat. Dies ermöglicht die Ausführung der Analyse als Jupyter-Notebook.
