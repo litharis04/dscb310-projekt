@@ -35,8 +35,8 @@ The .csv files described above are the input for analysis. They are located in t
 
 **Data Analysis Process:**
 1.  **Script Generation:** When analysis is requested, write Python scripts and save them in the `scripts/` folder.
-2.  **Output Generation:** Save the outputs of these scripts (text logs, summaries, CSVs) in the `outputs/` folder.
-3.  **Visualizations:** If visualization is requested, create plots using `matplotlib` or `seaborn` and **SAVE** them to `outputs/`. **NEVER** use `plt.show()` or interactive display commands, as they will freeze the headless environment.
+2.  **Output Generation:** Save the outputs of these scripts (text logs, summaries, CSVs) in the `outputs/` folder in .md or .csv format.
+3.  **Visualizations:** If visualization is requested, create plots using `matplotlib`, `plotly` or `seaborn` and **SAVE** them to `outputs/`. **NEVER** use `plt.show()` or interactive display commands, as they will freeze the headless environment.
 4.  **Refinement Loop:** Use the outputs from the `outputs/` folder to check your results. If the results are incomplete or the script fails, read the error log or output, refine the script in `scripts/`, and run it again.
-5.  **Finalization:** Once the analysis or visualization is correct and answers the question, copy the final working code from the script into a NEW cell in the `EDA.py` file located in the root directory.
-6.  **Formatting:** Ensure that the code added to `EDA.py` follows the **Jupytext percent format** (using `# %%` separators).
+5.  **Finalization:** Once the analysis or visualization is complete and answers the question, document the purpose of each script with short descriptions in the `scripts/README.md` file. Keep this file well-organized so that future team members can easily understand each script's purpose. Then copy the final, working code from the script into new cells in the `EDA.py` file located in the root directory. Edit or consolidate existing cells as needed.
+6.  **Formatting:** Ensure that the code added to `EDA.py` follows the **Jupytext percent format** (using `# %%` separators). All comments and outputs should be in German.
