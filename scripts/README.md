@@ -1,51 +1,42 @@
-# Skripte zur Fehleranalyse von user.csv
+# Skripte-Verzeichnis
 
-Dieses Verzeichnis enthält Skripte zur Analyse und Dokumentation von Fehlern in der Datei `data/user.csv`.
-
-## Skripte
-
-1. **find_user_csv_errors.py** - Umfassendes Fehlererkennungsskript
-   - Analysiert unrealistische Altersangaben
-   - Überprüft Datumsreihenfolge
-   - Validiert Konsistenz von Buchung/Ziel
-   - Sucht nach Tippfehlern in Textspalten
+Dieses Verzeichnis enthält Python-Skripte für explorative Datenanalysen und Datenverarbeitung.
 
 ## Ausgabedateien
 
 Alle Analyseergebnisse werden im Unterverzeichnis `outputs/` gespeichert:
+- Textdateien und Berichte im Markdown-Format (.md)
+- Visualisierungen als Bilddateien (.png, .jpg)
 
-- **user_csv_fehler_bericht.md** - Umfassender Bericht in Markdown-Format (Deutsch) ⭐ **HAUPTBERICHT**
+## Veraltete Skripte
 
-## Schnellzusammenfassung der Ergebnisse
+Die folgenden Skripte sind nicht mehr relevant und wurden durch die Hauptanalyse in `EDA.py` ersetzt:
 
-### Gefundene Fehler:
-1. **Altersfehler**: 3.511 Einträge mit unrealistischem Alter
-   - 2.701 Einträge mit Alter < 18 oder > 90
-   - 2.771 Einträge mit Alter > 80 (zur Information)
-   - 781 Einträge mit Alter > 120
-2. **Datumsreihenfolgefehler**: 29 Einträge (nach Korrektur des Zeitstempelproblems)
-3. **Buchungskonsistenz**: ✅ Keine Fehler gefunden
-4. **Tippfehler in Texten**: ✅ Keine Tippfehler gefunden
+1. ~~**find_user_csv_errors.py**~~ - Wurde durch strukturierte Analyse in EDA.py ersetzt
+   - Die ursprüngliche Fehleranalyse wurde vollständig in `EDA.py` integriert
+   - Die neue Version folgt einem systematischeren Ansatz mit Datenbereinigung
 
-### Hauptänderungen:
-- **Altersgrenze** von > 100 auf > 90 gesenkt
-- **Datumsvergleiche** werden nur auf Basis des Datums ohne Zeitstempel durchgeführt
-- Dies behebt das Problem mit `account_created_date` (00:00:00 Uhrzeit)
-- Variable `df` wurde in `df_user` umbenannt
+## Hauptanalyse
 
-### Empfehlungen:
-1. Altersdaten bereinigen (unrealistische Werte durch NaN ersetzen)
-2. Für die 29 Einträge mit account_created_date > first_booking_date Quelldaten überprüfen
+Die vollständige Datenaufbereitung und Fehleranalyse für `data/user.csv` befindet sich in:
+- **`EDA.py`** (Projektstammverzeichnis) - Hauptanalysedatei im Jupytext-Prozentformat
+- **`EDA.ipynb`** (Projektstammverzeichnis) - Automatisch generiertes Jupyter Notebook
+
+### Analyseschritte in EDA.py:
+1. Laden und allgemeine Inspektion der Daten
+2. Prüfung und Entfernung von Duplikaten
+3. Konvertierung von Datumsangaben
+4. Prüfung und Korrektur der Datumsreihenfolge
+5. Bereinigung von user_gender
+6. Filterung unrealistischer Altersangaben (< 18 oder > 90)
+7. Prüfung eindeutiger Werte und seltener Einträge
+8. Analyse der Abhängigkeit zwischen first_booking_date und destination_country
+9. Visualisierung fehlender Werte
 
 ## Verwendung
 
-Skripte aus dem Projektstammverzeichnis ausführen:
-
-```bash
-cd /home/runner/work/dscb310-projekt/dscb310-projekt
-python scripts/find_user_csv_errors.py
-```
-
-## Integration mit EDA.py
-
-Der finalisierte Analysecode wurde zu `EDA.py` im Projektstammverzeichnis hinzugefügt und folgt dem Jupytext-Prozentformat. Dies ermöglicht die Ausführung der Analyse als Jupyter-Notebook.
+Neue Analyseskripte sollten:
+1. In diesem Verzeichnis erstellt werden
+2. Klare, beschreibende Namen haben (z.B. `analyze_geo_data.py`)
+3. Ausgaben in `outputs/` speichern
+4. Nach erfolgreicher Validierung in `EDA.py` integriert werden
