@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Environment
+.env
+.venv
+env/
+venv/
+
+# IDE
+.vscode/
+.idea/
+
+# Generated outputs (except markdown documentation)
+scripts/outputs/*.png
+scripts/outputs/*.jpg
+scripts/outputs/*.jpeg
+scripts/outputs/*.csv
+
+# Keep markdown files in outputs
+!scripts/outputs/*.md
+
+# OS
+.DS_Store
+Thumbs.db

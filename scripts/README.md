@@ -1,41 +1,46 @@
-# Skripte zur Fehleranalyse von user.csv
+# Skripte zur Datenanalyse
 
-Dieses Verzeichnis enthält Skripte zur Analyse und Dokumentation von Fehlern in der Datei `data/user.csv`.
+Dieses Verzeichnis enthält Python-Skripte für die Analyse und Bereinigung von Daten aus `data/user.csv`.
 
 ## Skripte
 
-1. **find_user_csv_errors.py** - Umfassendes Fehlererkennungsskript
-   - Analysiert unrealistische Altersangaben
-   - Überprüft Datumsreihenfolge
-   - Validiert Konsistenz von Buchung/Ziel
-   - Sucht nach Tippfehlern in Textspalten
+### 1. clean_user_data.py
+Systematische Datenbereinigung von user.csv.
+
+**Durchgeführte Schritte:**
+1. Laden und allgemeine Inspektion der Daten
+2. Duplikatsprüfung und -entfernung
+3. Datumskonvertierung (in-place)
+4. Datumsreihenfolge-Validierung und Entfernung fehlerhafter Zeilen
+5. user_gender-Bereinigung (Normalisierung und Entfernung ungültiger Werte)
+6. Altersfilterung (Entfernung von Zeilen mit Alter < 18 oder > 90)
+7. Analyse eindeutiger Werte in Textspalten (Identifikation seltener Werte)
+8. Abhängigkeitsprüfung: first_booking_date ↔ destination_country
+9. Analyse fehlender Werte
+
+**Ausgabe:** `scripts/outputs/datenbereinigung_bericht.md`
+
+### 2. visualize_missing_values.py
+Visualisierung fehlender Werte mit missingno.
+
+**Erstellt:**
+- Matrix-Plot der fehlenden Werte
+- Bar-Plot der Datenvollständigkeit pro Spalte
+- Heatmap der Korrelation fehlender Werte
+
+**Ausgaben:**
+- `scripts/outputs/missing_values_matrix.png`
+- `scripts/outputs/missing_values_bar.png`
+- `scripts/outputs/missing_values_heatmap.png`
+
+### 3. find_user_csv_errors.py (veraltet)
+Umfassendes Fehlererkennungsskript - wurde durch `clean_user_data.py` und strukturierte Analyse ersetzt.
 
 ## Ausgabedateien
 
 Alle Analyseergebnisse werden im Unterverzeichnis `outputs/` gespeichert:
-
-- **user_csv_fehler_bericht.md** - Umfassender Bericht in Markdown-Format (Deutsch) ⭐ **HAUPTBERICHT**
-
-## Schnellzusammenfassung der Ergebnisse
-
-### Gefundene Fehler:
-1. **Altersfehler**: 3.511 Einträge mit unrealistischem Alter
-   - 2.701 Einträge mit Alter < 18 oder > 90
-   - 2.771 Einträge mit Alter > 80 (zur Information)
-   - 781 Einträge mit Alter > 120
-2. **Datumsreihenfolgefehler**: 29 Einträge (nach Korrektur des Zeitstempelproblems)
-3. **Buchungskonsistenz**: ✅ Keine Fehler gefunden
-4. **Tippfehler in Texten**: ✅ Keine Tippfehler gefunden
-
-### Hauptänderungen:
-- **Altersgrenze** von > 100 auf > 90 gesenkt
-- **Datumsvergleiche** werden nur auf Basis des Datums ohne Zeitstempel durchgeführt
-- Dies behebt das Problem mit `account_created_date` (00:00:00 Uhrzeit)
-- Variable `df` wurde in `df_user` umbenannt
-
-### Empfehlungen:
-1. Altersdaten bereinigen (unrealistische Werte durch NaN ersetzen)
-2. Für die 29 Einträge mit account_created_date > first_booking_date Quelldaten überprüfen
+- Textdateien und Berichte im Markdown-Format (.md)
+- Visualisierungen als Bilddateien (.png, .jpg)
 
 ## Verwendung
 
@@ -43,9 +48,25 @@ Skripte aus dem Projektstammverzeichnis ausführen:
 
 ```bash
 cd /home/runner/work/dscb310-projekt/dscb310-projekt
-python scripts/find_user_csv_errors.py
+
+# Datenbereinigung und Fehleranalyse
+python scripts/clean_user_data.py
+
+# Visualisierung fehlender Werte
+python scripts/visualize_missing_values.py
 ```
 
-## Integration mit EDA.py
+## Ergebnisse
 
-Der finalisierte Analysecode wurde zu `EDA.py` im Projektstammverzeichnis hinzugefügt und folgt dem Jupytext-Prozentformat. Dies ermöglicht die Ausführung der Analyse als Jupyter-Notebook.
+### Datenbereinigung:
+- **Ursprüngliche Zeilen**: 213.451
+- **Bereinigte Zeilen**: 210.721
+- **Entfernte Zeilen**: 2.730 (1,28%)
+  - 0 Duplikate
+  - 29 Datumsreihenfolgefehler
+  - 2.701 unrealistische Altersangaben
+- **Korrigierte Werte**: 95.685 (user_gender normalisiert)
+
+### Gefundene Inkonsistenzen:
+- ✅ Keine Inkonsistenz zwischen first_booking_date und destination_country
+- ⚠️ Einige seltene Werte in Textspalten identifiziert (potentielle Tippfehler)
