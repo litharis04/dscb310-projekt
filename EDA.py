@@ -20,8 +20,15 @@ import seaborn as sns
 import missingno as msno
 import plotly.express as px 
 import matplotlib.pyplot as plt
-from IPython.display import display
+import os
 from datetime import datetime
+
+# IPython display für Jupyter Notebooks
+try:
+    from IPython.display import display
+except ImportError:
+    # Fallback für Standalone-Ausführung
+    display = print
 
 # %% [markdown]
 # # Datenaufbereitung und Fehleranalyse: user.csv
@@ -355,6 +362,9 @@ else:
 # Visualisierung mit missingno - Matrix
 if fehlende_df['Anzahl fehlend'].sum() > 0:
     print("Visualisierung fehlender Werte mit missingno:")
+    
+    # Ausgabeverzeichnis erstellen (falls nicht vorhanden)
+    os.makedirs('scripts/outputs', exist_ok=True)
     
     # Matrix-Plot
     fig = plt.figure(figsize=(12, 6))

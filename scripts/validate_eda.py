@@ -10,11 +10,15 @@ import pandas as pd
 import sys
 import os
 
-# Zum Projektstammverzeichnis wechseln
-os.chdir('/home/runner/work/dscb310-projekt/dscb310-projekt')
+# Zum Projektstammverzeichnis wechseln (falls notwendig)
+script_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.dirname(script_dir)
+os.chdir(project_root)
 
 print("=" * 80)
 print("VALIDIERUNG VON EDA.PY")
+print("=" * 80)
+print(f"Arbeitsverzeichnis: {os.getcwd()}")
 print("=" * 80)
 
 try:
