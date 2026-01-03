@@ -51,7 +51,8 @@ except ImportError:
 # Daten laden
 df_user = pd.read_csv('data/user.csv')
 
-print(f"Anzahl der Zeilen: {len(df_user)}")
+rows_initial = len(df_user)
+print(f"Anzahl der Zeilen: {rows_initial}")
 print(f"Anzahl der Spalten: {len(df_user.columns)}")
 print(f"\nSpalten: {list(df_user.columns)}")
 
@@ -70,16 +71,16 @@ df_user.describe()
 
 # %%
 # Duplikate prüfen
-anzahl_duplikate = df_user.duplicated().sum()
-print(f"Anzahl der Duplikate: {anzahl_duplikate}")
+num_duplicates = df_user.duplicated().sum()
+print(f"Anzahl der Duplikate: {num_duplicates}")
 
-if anzahl_duplikate > 0:
+if num_duplicates > 0:
     print(f"\nBeispiele für Duplikate:")
     display(df_user[df_user.duplicated(keep=False)].head(10))
     
     # Duplikate entfernen
     df_user = df_user.drop_duplicates()
-    print(f"\n✓ {anzahl_duplikate} Duplikate wurden entfernt")
+    print(f"\n✓ {num_duplicates} Duplikate wurden entfernt")
     print(f"Neue Anzahl der Zeilen: {len(df_user)}")
 else:
     print("✓ Keine Duplikate gefunden")
@@ -134,35 +135,35 @@ print(f"  first_booking_date: {df_user['first_booking_date'].min()} bis {df_user
 
 # %%
 # Anzahl der Zeilen vor der Bereinigung
-zeilen_vorher = len(df_user)
+rows_before_date_check = len(df_user)
 
 # Fehlerhafte Datumsreihenfolge identifizieren
 # first_active_date > account_created_date
-fehler1 = (df_user['first_active_date'].notna()) & \
+error1 = (df_user['first_active_date'].notna()) & \
           (df_user['account_created_date'].notna()) & \
           (df_user['first_active_date'] > df_user['account_created_date'])
 
 # account_created_date > first_booking_date  
-fehler2 = (df_user['account_created_date'].notna()) & \
+error2 = (df_user['account_created_date'].notna()) & \
           (df_user['first_booking_date'].notna()) & \
           (df_user['account_created_date'] > df_user['first_booking_date'])
 
 # Kombinierte Fehlermaske
-datum_fehler = fehler1 | fehler2
+date_errors = error1 | error2
 
-anzahl_datum_fehler = datum_fehler.sum()
-print(f"Anzahl der Zeilen mit fehlerhafter Datumsreihenfolge: {anzahl_datum_fehler}")
-print(f"  - first_active_date > account_created_date: {fehler1.sum()}")
-print(f"  - account_created_date > first_booking_date: {fehler2.sum()}")
+num_date_errors = date_errors.sum()
+print(f"Anzahl der Zeilen mit fehlerhafter Datumsreihenfolge: {num_date_errors}")
+print(f"  - first_active_date > account_created_date: {error1.sum()}")
+print(f"  - account_created_date > first_booking_date: {error2.sum()}")
 
-if anzahl_datum_fehler > 0:
+if num_date_errors > 0:
     print(f"\nBeispiele für fehlerhafte Datumsreihenfolge:")
-    display(df_user[datum_fehler][['user_id', 'first_active_date', 'account_created_date', 'first_booking_date']].head(10))
+    display(df_user[date_errors][['user_id', 'first_active_date', 'account_created_date', 'first_booking_date']].head(10))
     
     # Fehlerhafte Zeilen entfernen
-    df_user = df_user[~datum_fehler]
-    print(f"\n✓ {anzahl_datum_fehler} Zeilen mit fehlerhafter Datumsreihenfolge wurden entfernt")
-    print(f"Anzahl der Zeilen: {zeilen_vorher} → {len(df_user)}")
+    df_user = df_user[~date_errors]
+    print(f"\n✓ {num_date_errors} Zeilen mit fehlerhafter Datumsreihenfolge wurden entfernt")
+    print(f"Anzahl der Zeilen: {rows_before_date_check} → {len(df_user)}")
 else:
     print("✓ Keine Fehler in der Datumsreihenfolge gefunden")
 
@@ -171,32 +172,34 @@ else:
 #
 # Zulässige Werte: 'female', 'male', 'other', NaN
 #
-# Alle anderen Werte werden auf NaN gesetzt.
+# Zunächst Analyse der ursprünglichen Werte, dann Bereinigung.
 
 # %%
-# Aktuelle eindeutige Werte in user_gender
-print("Eindeutige Werte in user_gender:")
+# Analyse der ursprünglichen Werte in user_gender
+print("Ursprüngliche eindeutige Werte in user_gender:")
 print(df_user['user_gender'].value_counts(dropna=False))
 print()
 
-# Zulässige Werte definieren
-zulaessige_gender = ['female', 'male', 'other', 'FEMALE', 'MALE', 'OTHER']
-
-# Inkonsistenzen identifizieren
-ungueltige_gender = ~df_user['user_gender'].isin(zulaessige_gender) & df_user['user_gender'].notna()
-anzahl_ungueltige = ungueltige_gender.sum()
-
-print(f"Anzahl der Zeilen mit ungültigem user_gender: {anzahl_ungueltige}")
-
-if anzahl_ungueltige > 0:
-    print("\nBeispiele für ungültige Werte:")
-    display(df_user[ungueltige_gender][['user_id', 'user_gender']].head(10))
+# %%
+# Zulässige Werte definieren und normalisieren
+print("Bereinigung von user_gender...")
 
 # Normalisierung: Groß-/Kleinschreibung vereinheitlichen
 df_user['user_gender'] = df_user['user_gender'].str.lower()
 
+# Ungültige Werte identifizieren
+valid_genders = ['female', 'male', 'other']
+invalid_gender_mask = ~df_user['user_gender'].isin(valid_genders) & df_user['user_gender'].notna()
+num_invalid_gender = invalid_gender_mask.sum()
+
+print(f"Anzahl der Zeilen mit ungültigem user_gender: {num_invalid_gender}")
+
+if num_invalid_gender > 0:
+    print("\nBeispiele für ungültige Werte:")
+    display(df_user[invalid_gender_mask][['user_id', 'user_gender']].head(10))
+
 # Ungültige Werte auf NaN setzen
-df_user.loc[~df_user['user_gender'].isin(['female', 'male', 'other']), 'user_gender'] = np.nan
+df_user.loc[~df_user['user_gender'].isin(valid_genders), 'user_gender'] = np.nan
 
 print(f"\n✓ user_gender wurde bereinigt")
 print("\nBereinigte Werte:")
@@ -209,7 +212,7 @@ print(df_user['user_gender'].value_counts(dropna=False))
 
 # %%
 # Anzahl der Zeilen vor der Bereinigung
-zeilen_vorher = len(df_user)
+rows_before_age = len(df_user)
 
 # Altersstatistik vor der Bereinigung
 print("Altersstatistik vor der Bereinigung:")
@@ -217,23 +220,23 @@ print(df_user['user_age'].describe())
 print()
 
 # Unrealistische Altersangaben identifizieren
-alter_zu_jung = df_user['user_age'] < 18
-alter_zu_alt = df_user['user_age'] > 90
-unrealistisches_alter = alter_zu_jung | alter_zu_alt
+age_too_young = df_user['user_age'] < 18
+age_too_old = df_user['user_age'] > 90
+invalid_age = age_too_young | age_too_old
 
-anzahl_unrealistisch = unrealistisches_alter.sum()
-print(f"Anzahl der Zeilen mit unrealistischem Alter: {anzahl_unrealistisch}")
-print(f"  - Alter < 18: {alter_zu_jung.sum()}")
-print(f"  - Alter > 90: {alter_zu_alt.sum()}")
+num_invalid_age = invalid_age.sum()
+print(f"Anzahl der Zeilen mit unrealistischem Alter: {num_invalid_age}")
+print(f"  - Alter < 18: {age_too_young.sum()}")
+print(f"  - Alter > 90: {age_too_old.sum()}")
 
-if anzahl_unrealistisch > 0:
+if num_invalid_age > 0:
     print(f"\nBeispiele für unrealistische Altersangaben:")
-    display(df_user[unrealistisches_alter][['user_id', 'user_age', 'account_created_date']].head(10))
+    display(df_user[invalid_age][['user_id', 'user_age', 'account_created_date']].head(10))
     
     # Zeilen mit unrealistischem Alter entfernen
-    df_user = df_user[~unrealistisches_alter]
-    print(f"\n✓ {anzahl_unrealistisch} Zeilen mit unrealistischem Alter wurden entfernt")
-    print(f"Anzahl der Zeilen: {zeilen_vorher} → {len(df_user)}")
+    df_user = df_user[~invalid_age]
+    print(f"\n✓ {num_invalid_age} Zeilen mit unrealistischem Alter wurden entfernt")
+    print(f"Anzahl der Zeilen: {rows_before_age} → {len(df_user)}")
 else:
     print("✓ Keine unrealistischen Altersangaben gefunden")
 
@@ -247,7 +250,7 @@ print(df_user['user_age'].describe())
 
 # %%
 # Zu prüfende Textspalten
-text_spalten = [
+text_columns = [
     'user_gender', 'signup_platform', 'signup_process', 'user_language',
     'marketing_channel', 'marketing_provider', 'first_tracked_affiliate',
     'signup_application', 'first_device', 'first_web_browser', 'destination_country'
@@ -256,29 +259,29 @@ text_spalten = [
 print("Analyse der Textspalten auf seltene Werte (< 10 Vorkommen):\n")
 print("=" * 80)
 
-for spalte in text_spalten:
-    print(f"\n{spalte}:")
+for col in text_columns:
+    print(f"\n{col}:")
     print("-" * 80)
     
-    werte_haeufigkeit = df_user[spalte].value_counts(dropna=False)
-    print(f"Anzahl eindeutiger Werte: {len(werte_haeufigkeit)}")
+    value_counts = df_user[col].value_counts(dropna=False)
+    print(f"Anzahl eindeutiger Werte: {len(value_counts)}")
     
     # Seltene Werte (< 10 Vorkommen)
-    seltene_werte = werte_haeufigkeit[werte_haeufigkeit < 10]
+    rare_values = value_counts[value_counts < 10]
     
-    if len(seltene_werte) > 0:
-        print(f"⚠️  Seltene Werte (< 10 Vorkommen): {len(seltene_werte)}")
+    if len(rare_values) > 0:
+        print(f"⚠️  Seltene Werte (< 10 Vorkommen): {len(rare_values)}")
         print("\nTop 15 seltene Werte:")
-        for wert, anzahl in seltene_werte.head(15).items():
-            print(f"  - '{wert}': {anzahl}")
+        for value, count in rare_values.head(15).items():
+            print(f"  - '{value}': {count}")
     else:
         print("✓ Keine seltenen Werte gefunden")
     
     # Top 10 häufigste Werte
     print(f"\nTop 10 häufigste Werte:")
-    for wert, anzahl in werte_haeufigkeit.head(10).items():
-        anteil = (anzahl / len(df_user)) * 100
-        print(f"  - '{wert}': {anzahl} ({anteil:.2f}%)")
+    for value, count in value_counts.head(10).items():
+        percentage = (count / len(df_user)) * 100
+        print(f"  - '{value}': {count} ({percentage:.2f}%)")
 
 # %% [markdown]
 # ## 8. Analyse der Abhängigkeit: first_booking_date ↔ destination_country
@@ -292,50 +295,50 @@ print("Analyse der Abhängigkeit zwischen first_booking_date und destination_cou
 print("=" * 80)
 
 # Fall 1: Keine Buchung (first_booking_date = NaN), aber destination != NDF
-keine_buchung_aber_destination = (df_user['first_booking_date'].isna()) & \
-                                  (df_user['destination_country'] != 'NDF')
-anzahl_fall1 = keine_buchung_aber_destination.sum()
+no_booking_but_dest = (df_user['first_booking_date'].isna()) & \
+                       (df_user['destination_country'] != 'NDF')
+num_case1 = no_booking_but_dest.sum()
 
-print(f"\n1. Zeilen ohne Buchungsdatum, aber destination_country != 'NDF': {anzahl_fall1}")
+print(f"\n1. Zeilen ohne Buchungsdatum, aber destination_country != 'NDF': {num_case1}")
 
-if anzahl_fall1 > 0:
+if num_case1 > 0:
     print("   ❌ INKONSISTENZ gefunden!")
     print("\n   Beispiele:")
-    display(df_user[keine_buchung_aber_destination][['user_id', 'first_booking_date', 'destination_country']].head(10))
+    display(df_user[no_booking_but_dest][['user_id', 'first_booking_date', 'destination_country']].head(10))
 else:
     print("   ✓ Keine Inkonsistenz")
 
 # Fall 2: Buchung vorhanden (first_booking_date != NaN), aber destination = NDF
-buchung_aber_ndf = (df_user['first_booking_date'].notna()) & \
+booking_but_ndf = (df_user['first_booking_date'].notna()) & \
                    (df_user['destination_country'] == 'NDF')
-anzahl_fall2 = buchung_aber_ndf.sum()
+num_case2 = booking_but_ndf.sum()
 
-print(f"\n2. Zeilen mit Buchungsdatum, aber destination_country = 'NDF': {anzahl_fall2}")
+print(f"\n2. Zeilen mit Buchungsdatum, aber destination_country = 'NDF': {num_case2}")
 
-if anzahl_fall2 > 0:
+if num_case2 > 0:
     print("   ❌ INKONSISTENZ gefunden!")
     print("\n   Beispiele:")
-    display(df_user[buchung_aber_ndf][['user_id', 'first_booking_date', 'destination_country']].head(10))
+    display(df_user[booking_but_ndf][['user_id', 'first_booking_date', 'destination_country']].head(10))
 else:
     print("   ✓ Keine Inkonsistenz")
 
 # Zusammenfassung
 print(f"\n" + "=" * 80)
 print("ZUSAMMENFASSUNG:")
-anzahl_inkonsistenzen = anzahl_fall1 + anzahl_fall2
+total_inconsistencies = num_case1 + num_case2
 
-if anzahl_inkonsistenzen == 0:
+if total_inconsistencies == 0:
     print("✓ Die Abhängigkeit zwischen first_booking_date und destination_country ist konsistent")
 else:
-    print(f"❌ Insgesamt {anzahl_inkonsistenzen} inkonsistente Zeilen gefunden")
+    print(f"❌ Insgesamt {total_inconsistencies} inkonsistente Zeilen gefunden")
 
 # Statistik
-keine_buchung_gesamt = df_user['first_booking_date'].isna().sum()
-ndf_gesamt = (df_user['destination_country'] == 'NDF').sum()
+no_booking_total = df_user['first_booking_date'].isna().sum()
+ndf_total = (df_user['destination_country'] == 'NDF').sum()
 
 print(f"\nStatistik:")
-print(f"  - Zeilen ohne Buchungsdatum: {keine_buchung_gesamt}")
-print(f"  - Zeilen mit destination_country = 'NDF': {ndf_gesamt}")
+print(f"  - Zeilen ohne Buchungsdatum: {no_booking_total}")
+print(f"  - Zeilen mit destination_country = 'NDF': {ndf_total}")
 
 # %% [markdown]
 # ## 9. Visualisierung fehlender Werte
@@ -343,24 +346,24 @@ print(f"  - Zeilen mit destination_country = 'NDF': {ndf_gesamt}")
 # %%
 # Fehlende Werte pro Spalte
 print("Fehlende Werte pro Spalte:\n")
-fehlende_werte = df_user.isnull().sum()
-fehlende_werte_prozent = (fehlende_werte / len(df_user)) * 100
+missing_values = df_user.isnull().sum()
+missing_percent = (missing_values / len(df_user)) * 100
 
-fehlende_df = pd.DataFrame({
-    'Spalte': fehlende_werte.index,
-    'Anzahl fehlend': fehlende_werte.values,
-    'Prozent fehlend': fehlende_werte_prozent.values
+missing_df = pd.DataFrame({
+    'Spalte': missing_values.index,
+    'Anzahl fehlend': missing_values.values,
+    'Prozent fehlend': missing_percent.values
 })
-fehlende_df = fehlende_df[fehlende_df['Anzahl fehlend'] > 0].sort_values('Anzahl fehlend', ascending=False)
+missing_df = missing_df[missing_df['Anzahl fehlend'] > 0].sort_values('Anzahl fehlend', ascending=False)
 
-if len(fehlende_df) > 0:
-    display(fehlende_df)
+if len(missing_df) > 0:
+    display(missing_df)
 else:
     print("✓ Keine fehlenden Werte gefunden")
 
 # %%
-# Visualisierung mit missingno - Matrix
-if fehlende_df['Anzahl fehlend'].sum() > 0:
+# Visualisierung mit missingno
+if len(missing_df) > 0 and missing_df['Anzahl fehlend'].sum() > 0:
     print("Visualisierung fehlender Werte mit missingno:")
     
     # Ausgabeverzeichnis erstellen (falls nicht vorhanden)
@@ -405,7 +408,9 @@ else:
 print("=" * 80)
 print("FINALE DATENÜBERSICHT")
 print("=" * 80)
-print(f"\nAnzahl der Zeilen nach Bereinigung: {len(df_user)}")
+print(f"\nUrsprüngliche Anzahl der Zeilen: {rows_initial}")
+print(f"Finale Anzahl der Zeilen: {len(df_user)}")
+print(f"Entfernte Zeilen gesamt: {rows_initial - len(df_user)} ({((rows_initial - len(df_user)) / rows_initial * 100):.2f}%)")
 print(f"Anzahl der Spalten: {len(df_user.columns)}")
 
 print(f"\nDatentypen:")
