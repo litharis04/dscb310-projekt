@@ -1,0 +1,82 @@
+Zusammenfassung der eindeutigen Werte pro Spalte in df_clickstreams
+============================================================
+
+Spalte: session_action
+Anzahl eindeutiger Werte: 360
+Wert - Anzahl - Prozent
+'show' - 2768278 - 26.20%
+'index' - 843699 - 7.98%
+'search_results' - 725226 - 6.86%
+'personalize' - 706824 - 6.69%
+'search' - 536057 - 5.07%
+'ajax_refresh_subtotal' - 487744 - 4.62%
+'update' - 365130 - 3.46%
+'similar_listings' - 364624 - 3.45%
+'social_connections' - 339000 - 3.21%
+'reviews' - 320591 - 3.03%
+'active' - 188036 - 1.78%
+'similar_listings_v2' - 168788 - 1.60%
+'lookup' - 162041 - 1.53%
+'create' - 155887 - 1.48%
+'dashboard' - 152952 - 1.45%
+
+------------------------------------------------------------
+
+Spalte: session_action_type
+Anzahl eindeutiger Werte: 11
+Wert - Anzahl - Prozent
+'view' - 3560902 - 33.70%
+'data' - 2103770 - 19.91%
+'click' - 1996183 - 18.89%
+'None' - 1126204 - 10.66%
+'-unknown-' - 1031170 - 9.76%
+'submit' - 623357 - 5.90%
+'message_post' - 87103 - 0.82%
+'partner_callback' - 19132 - 0.18%
+'booking_request' - 18773 - 0.18%
+'modify' - 1139 - 0.01%
+'booking_response' - 4 - 0.00%
+
+------------------------------------------------------------
+
+Spalte: session_action_detail
+Anzahl eindeutiger Werte: 156
+Wert - Anzahl - Prozent
+'view_search_results' - 1776885 - 16.81%
+'p3' - 1376550 - 13.03%
+'None' - 1126204 - 10.66%
+'-unknown-' - 1031141 - 9.76%
+'wishlist_content_update' - 706824 - 6.69%
+'user_profile' - 656839 - 6.22%
+'change_trip_characteristics' - 487744 - 4.62%
+'similar_listings' - 364624 - 3.45%
+'user_social_connections' - 336799 - 3.19%
+'update_listing' - 269779 - 2.55%
+'listing_reviews' - 269021 - 2.55%
+'dashboard' - 152952 - 1.45%
+'user_wishlists' - 152672 - 1.44%
+'header_userpic' - 141830 - 1.34%
+'message_thread' - 132395 - 1.25%
+
+------------------------------------------------------------
+
+Spalte: session_device_type
+Anzahl eindeutiger Werte: 14
+Wert - Anzahl - Prozent
+'Mac Desktop' - 3594286 - 34.01%
+'Windows Desktop' - 2658539 - 25.16%
+'iPhone' - 2105031 - 19.92%
+'Android Phone' - 839637 - 7.95%
+'iPad Tablet' - 683414 - 6.47%
+'Android App Unknown Phone/Tablet' - 273652 - 2.59%
+'-unknown-' - 211279 - 2.00%
+'Tablet' - 139886 - 1.32%
+'Linux Desktop' - 28373 - 0.27%
+'Chromebook' - 22348 - 0.21%
+'iPodtouch' - 8198 - 0.08%
+'Windows Phone' - 2047 - 0.02%
+'Blackberry' - 979 - 0.01%
+'Opera Phone' - 68 - 0.00%
+
+------------------------------------------------------------
+
