@@ -134,7 +134,7 @@ with open(output_file, 'w', encoding='utf-8') as f:
     f.write("|-----|--------|--------|\n")
     for val, count in type_counts.items():
         pct = count / rows_initial * 100
-        val_str = str(val) if val is not None else "NaN"
+        val_str = str(val) if pd.notna(val) else "NaN"
         f.write(f"| {val_str} | {count:,} | {pct:.2f}% |\n")
     f.write("\n")
     
@@ -162,7 +162,7 @@ with open(output_file, 'w', encoding='utf-8') as f:
     f.write("|-------|--------|--------|\n")
     for val, count in device_counts.items():
         pct = count / rows_initial * 100
-        val_str = str(val) if val is not None else "NaN"
+        val_str = str(val) if pd.notna(val) else "NaN"
         f.write(f"| {val_str} | {count:,} | {pct:.2f}% |\n")
     f.write("\n")
     

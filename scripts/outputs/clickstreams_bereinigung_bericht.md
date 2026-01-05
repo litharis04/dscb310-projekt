@@ -100,7 +100,7 @@ Sie werden nicht als Fehler betrachtet und bleiben unverändert.
 | data | 2,103,770 | 19.91% |
 | click | 1,996,183 | 18.89% |
 | NaN | 1,126,204 | 10.66% |
-| nan | 1,031,170 | 9.76% |
+| NaN | 1,031,170 | 9.76% |
 | submit | 623,357 | 5.90% |
 | message_post | 87,103 | 0.82% |
 | partner_callback | 19,132 | 0.18% |
@@ -141,7 +141,7 @@ Sie werden nicht als Fehler betrachtet und bleiben unverändert.
 | Android Phone | 839,637 | 7.95% |
 | iPad Tablet | 683,414 | 6.47% |
 | Android App Unknown Phone/Tablet | 273,652 | 2.59% |
-| nan | 211,279 | 2.00% |
+| NaN | 211,279 | 2.00% |
 | Tablet | 139,886 | 1.32% |
 | Linux Desktop | 28,373 | 0.27% |
 | Chromebook | 22,348 | 0.21% |
