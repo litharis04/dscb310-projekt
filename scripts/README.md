@@ -1,6 +1,6 @@
 # Skripte zur Datenanalyse
 
-Dieses Verzeichnis enthält Python-Skripte für die Analyse und Bereinigung von Daten aus `data/user.csv`.
+Dieses Verzeichnis enthält Python-Skripte für die Analyse und Bereinigung von Daten aus `data/user.csv` und `data/clickstreams.parquet`.
 
 ## Skripte
 
@@ -36,6 +36,25 @@ Visualisierung fehlender Werte mit missingno.
 ### 3. find_user_csv_errors.py (veraltet)
 Umfassendes Fehlererkennungsskript - wurde durch `clean_user_data.py` und strukturierte Analyse ersetzt.
 
+### 4. clean_clickstream_data.py
+Systematische Datenbereinigung und Fehleranalyse von clickstreams.parquet.
+
+**Durchgeführte Schritte:**
+1. Laden und allgemeine Inspektion der Daten
+2. Duplikatsprüfung (Duplikate werden beibehalten)
+3. Analyse fehlender Werte
+4. Analyse und Bereinigung von '-unknown-' Werten (durch NaN ersetzt)
+5. Detaillierte Analyse aller Spalten
+6. Visualisierung fehlender Werte mit missingno
+
+**Hinweis:** NaN-Werte in session_action_type und session_action_detail sind legitim (technische Anfragen).
+
+**Ausgaben:**
+- `scripts/outputs/clickstreams_bereinigung_bericht.md` (Analysebericht)
+- `scripts/outputs/clickstreams_missing_matrix.png` (Matrix-Plot)
+- `scripts/outputs/clickstreams_missing_bar.png` (Bar-Plot)
+- `data/clickstreams-filtered.parquet` (bereinigte Daten)
+
 ## Ausgabedateien
 
 Alle Analyseergebnisse werden im Unterverzeichnis `outputs/` gespeichert:
@@ -49,11 +68,14 @@ Skripte aus dem Projektstammverzeichnis ausführen:
 ```bash
 cd /home/runner/work/dscb310-projekt/dscb310-projekt
 
-# Datenbereinigung und Fehleranalyse
+# Datenbereinigung und Fehleranalyse (user.csv)
 python scripts/clean_user_data.py
 
-# Visualisierung fehlender Werte
+# Visualisierung fehlender Werte (user.csv)
 python scripts/visualize_missing_values.py
+
+# Datenbereinigung und Fehleranalyse (clickstreams.parquet)
+python scripts/clean_clickstream_data.py
 ```
 
 ## Ergebnisse
@@ -70,3 +92,12 @@ python scripts/visualize_missing_values.py
 ### Gefundene Inkonsistenzen:
 - ✅ Keine Inkonsistenz zwischen first_booking_date und destination_country
 - ⚠️ Einige seltene Werte in Textspalten identifiziert (potentielle Tippfehler)
+
+### Clickstreams-Bereinigung:
+- **Ursprüngliche Zeilen**: 10.567.737
+- **Finale Zeilen**: 10.567.737 (keine Zeilen entfernt)
+- **Ersetzte Werte**:
+  - '-unknown-' in session_action_type: 1.031.170
+  - '-unknown-' in session_action_detail: 1.031.141
+  - '-unknown-' in session_device_type: 211.279
+- **Legitime NaN-Werte**: session_action_type und session_action_detail (technische Anfragen)
