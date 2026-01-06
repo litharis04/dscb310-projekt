@@ -356,5 +356,5 @@ df_user.info()
 
 # %%
 # Exportieren
-df_user.to_parquet('data/users_filtered.parquet', index=False)
-print("df_user erfolgreich in 'data/users_filtered.parquet' exportiert")
+df_user.to_parquet('data/user_filtered.parquet', index=False)
+print("df_user erfolgreich in 'data/user_filtered.parquet' exportiert")

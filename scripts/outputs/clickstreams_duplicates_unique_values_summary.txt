@@ -1,0 +1,116 @@
+Zusammenfassung der eindeutigen Werte pro Spalte in df_duplicates
+============================================================
+
+Spalte: session_user_id
+Anzahl eindeutiger Werte: 34943
+Wert - Anzahl - Prozent
+NaN - 5188 - 2.05%
+'mxqbh3ykxl' - 1893 - 0.75%
+'h0cjxc177k' - 1636 - 0.65%
+'78mnangc8a' - 1406 - 0.56%
+'a0uhiojrra' - 1363 - 0.54%
+'ewbx85fxtx' - 816 - 0.32%
+'0hjoc5q8nf' - 781 - 0.31%
+'93dulcecw0' - 619 - 0.25%
+'51gxyckww4' - 596 - 0.24%
+'ht8alhs4lt' - 481 - 0.19%
+'wyv1imf8qw' - 468 - 0.19%
+'e4kn8hbtui' - 454 - 0.18%
+'p1183hxzc4' - 423 - 0.17%
+'dnomxzr5aq' - 410 - 0.16%
+'1m6xnhstmb' - 404 - 0.16%
+
+------------------------------------------------------------
+
+Spalte: session_action
+Anzahl eindeutiger Werte: 171
+Wert - Anzahl - Prozent
+'show' - 109983 - 43.55%
+'similar_listings' - 15918 - 6.30%
+'personalize' - 13876 - 5.49%
+'ajax_refresh_subtotal' - 11303 - 4.48%
+'search' - 11218 - 4.44%
+'reviews' - 9224 - 3.65%
+'search_results' - 9099 - 3.60%
+'similar_listings_v2' - 8786 - 3.48%
+'complete_status' - 7413 - 2.94%
+'index' - 7367 - 2.92%
+'social_connections' - 7201 - 2.85%
+'track_page_view' - 5427 - 2.15%
+'lookup' - 4531 - 1.79%
+'view' - 3815 - 1.51%
+'ajax_photo_widget_form_iframe' - 3739 - 1.48%
+
+------------------------------------------------------------
+
+Spalte: session_action_type
+Anzahl eindeutiger Werte: 10
+Wert - Anzahl - Prozent
+'view' - 84012 - 33.27%
+NaN - 54795 - 21.70%
+'data' - 49360 - 19.55%
+'click' - 36392 - 14.41%
+'-unknown-' - 23196 - 9.19%
+'submit' - 3241 - 1.28%
+'message_post' - 1367 - 0.54%
+'booking_request' - 116 - 0.05%
+'partner_callback' - 55 - 0.02%
+'modify' - 2 - 0.00%
+
+------------------------------------------------------------
+
+Spalte: session_action_detail
+Anzahl eindeutiger Werte: 104
+Wert - Anzahl - Prozent
+NaN - 54795 - 21.70%
+'user_profile' - 38585 - 15.28%
+'p3' - 37943 - 15.02%
+'view_search_results' - 24396 - 9.66%
+'-unknown-' - 23196 - 9.19%
+'similar_listings' - 15918 - 6.30%
+'wishlist_content_update' - 13876 - 5.49%
+'change_trip_characteristics' - 11303 - 4.48%
+'listing_reviews' - 8765 - 3.47%
+'user_social_connections' - 7170 - 2.84%
+'update_listing' - 2108 - 0.83%
+'message_post' - 1367 - 0.54%
+'change_contact_host_dates' - 980 - 0.39%
+'photos' - 911 - 0.36%
+'unavailable_dates' - 848 - 0.34%
+
+------------------------------------------------------------
+
+Spalte: session_device_type
+Anzahl eindeutiger Werte: 13
+Wert - Anzahl - Prozent
+'Mac Desktop' - 75043 - 29.72%
+'iPhone' - 64935 - 25.71%
+'Windows Desktop' - 61453 - 24.33%
+'Android Phone' - 23905 - 9.47%
+'iPad Tablet' - 14688 - 5.82%
+'Android App Unknown Phone/Tablet' - 5853 - 2.32%
+'Tablet' - 3642 - 1.44%
+'-unknown-' - 1746 - 0.69%
+'Linux Desktop' - 720 - 0.29%
+'Chromebook' - 303 - 0.12%
+'iPodtouch' - 240 - 0.10%
+'Windows Phone' - 7 - 0.00%
+'Blackberry' - 1 - 0.00%
+
+------------------------------------------------------------
+
+Spalte: time_passed_in_seconds (numerisch)
+Anzahl eindeutiger Werte: 4278
+Statistiken:
+count    252040.000000
+mean        307.819243
+std        1995.061890
+min           0.000000
+25%           6.000000
+50%          51.000000
+75%         162.000000
+max      240000.000000
+Name: time_passed_in_seconds, dtype: float64
+
+------------------------------------------------------------
+

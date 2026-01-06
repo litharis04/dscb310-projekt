@@ -33,4 +33,3 @@ Thumbs.db
 
 # clickstreams
 data/clickstreams.csv
-data/clickstreams-filtered.parquet

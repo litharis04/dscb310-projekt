@@ -66,8 +66,50 @@ df_clickstreams.describe()
 num_duplicates = df_clickstreams.duplicated().sum()
 print(f"Anzahl der Duplikate: {num_duplicates:,}")
 print(f"Prozentsatz: {num_duplicates / rows_initial * 100:.2f}%")
+print('-' * 60)
 
-print("\n⚠️ Hinweis: Duplikate werden beibehalten, da sie legitime wiederholte Aktionen sein könnten.")
+# Duplikate in separaten DataFrame speichern
+df_duplicates = df_clickstreams[df_clickstreams.duplicated()]
+print(f"Anzahl der Duplikate im separaten DataFrame: {len(df_duplicates):,}")
+
+# Eindeutige Werte für session_action
+print("\nEindeutige Werte in session_action:")
+unique_action = df_duplicates['session_action'].value_counts(dropna=False)
+print(unique_action)
+print(f"Anzahl eindeutiger Werte: {df_duplicates['session_action'].nunique(dropna=False)}\n")
+print(f"Prozentuale Verteilung:\n{(unique_action / len(df_duplicates) * 100).round(2)}")
+print('-' * 60)
+
+# Eindeutige Werte für session_action_type
+print("\nEindeutige Werte in session_action_type:")
+unique_action_type = df_duplicates['session_action_type'].value_counts(dropna=False)
+print(unique_action_type)
+print(f"Anzahl eindeutiger Werte: {df_duplicates['session_action_type'].nunique(dropna=False)}\n")
+print(f"Prozentuale Verteilung:\n{(unique_action_type / len(df_duplicates) * 100).round(2)}")
+print('-' * 60)
+
+# Eindeutige Werte für session_action_detail
+print("\nEindeutige Werte in session_action_detail:")
+unique_action_detail = df_duplicates['session_action_detail'].value_counts(dropna=False)
+print(unique_action_detail)
+print(f"Anzahl eindeutiger Werte: {df_duplicates['session_action_detail'].nunique(dropna=False)}\n")
+print(f"Prozentuale Verteilung:\n{(unique_action_detail / len(df_duplicates) * 100).round(2)}")
+print('-' * 60)
+
+# Statistiken für time_passed_in_seconds
+print("\nStatistiken für time_passed_in_seconds:")
+print(df_duplicates['time_passed_in_seconds'].describe())
+
+# Anzahl eindeutiger session_user_id
+# Duplikate aus df_clickstreams entfernen
+df_clickstreams = df_clickstreams.drop_duplicates()
+
+# df_duplicates löschen
+del df_duplicates
+
+print('-' * 60)
+print('Duplikate entfernt.')
+
 
 # %% [markdown]
 # ## 3. Analyse fehlender Werte (vor Bereinigung)
@@ -85,10 +127,6 @@ missing_df = pd.DataFrame({
 missing_df = missing_df.sort_values('Fehlend', ascending=False)
 display(missing_df)
 
-print("\nℹ️ Hinweis zu NaN-Werten in session_action_type und session_action_detail:")
-print("Diese leeren Werte (None/NaN) sind LEGITIM und repräsentieren technische Anfragen an die Website.")
-print("Sie werden nicht als Fehler betrachtet und bleiben unverändert.")
-
 # %% [markdown]
 # ## 4. Analyse und Bereinigung von '-unknown-' Werten
 #
@@ -96,25 +134,13 @@ print("Sie werden nicht als Fehler betrachtet und bleiben unverändert.")
 
 # %%
 # Analyse von '-unknown-' Werten
-text_cols = ['session_action_type', 'session_action_detail', 'session_device_type']
+text_cols = ['session_user_id', 'session_action_type', 'session_action_detail', 'session_device_type']
 
 print("Anzahl der '-unknown-' Werte pro Spalte:\n")
 for col in text_cols:
     count = (df_clickstreams[col] == '-unknown-').sum()
     pct = count / rows_initial * 100
     print(f"{col}: {count:,} ({pct:.2f}%)")
-
-# %%
-# Korrelation von '-unknown-' Werten
-unk_type = (df_clickstreams['session_action_type'] == '-unknown-')
-unk_detail = (df_clickstreams['session_action_detail'] == '-unknown-')
-unk_device = (df_clickstreams['session_device_type'] == '-unknown-')
-
-print("Korrelation von '-unknown-' Werten:\n")
-print(f"session_action_type UND session_action_detail sind '-unknown-': {(unk_type & unk_detail).sum():,}")
-print(f"NUR session_action_type ist '-unknown-': {(unk_type & ~unk_detail).sum():,}")
-print(f"NUR session_action_detail ist '-unknown-': {(~unk_type & unk_detail).sum():,}")
-print(f"session_device_type ist '-unknown-': {unk_device.sum():,}")
 
 # %%
 # Bereinigung: '-unknown-' durch NaN ersetzen
@@ -140,15 +166,23 @@ print("=== session_action ===")
 print(f"Eindeutige Werte: {df_clickstreams['session_action'].nunique()}")
 print(f"Fehlende Werte: {df_clickstreams['session_action'].isna().sum():,}")
 print("\nTop 10 häufigste Werte:")
-df_clickstreams['session_action'].value_counts().head(10)
+
+counts = df_clickstreams['session_action'].value_counts().head(10)
+for val, count in counts.items():
+    pct = (count / len(df_clickstreams) * 100)
+    print(f"'{val}' - {count:,} - {pct:.2f}%")
 
 # %%
 # session_action_type
 print("=== session_action_type ===")
 print(f"Eindeutige Werte: {df_clickstreams['session_action_type'].nunique()}")
 print(f"Fehlende Werte: {df_clickstreams['session_action_type'].isna().sum():,}")
-print("\nWertverteilung:")
-df_clickstreams['session_action_type'].value_counts(dropna=False)
+print("\nTop 10 häufigste Werte:")
+
+counts = df_clickstreams['session_action_type'].value_counts().head(10)
+for val, count in counts.items():
+    pct = (count / len(df_clickstreams) * 100)
+    print(f"'{val}' - {count:,} - {pct:.2f}%")
 
 # %%
 # session_action_detail
@@ -156,15 +190,26 @@ print("=== session_action_detail ===")
 print(f"Eindeutige Werte: {df_clickstreams['session_action_detail'].nunique()}")
 print(f"Fehlende Werte: {df_clickstreams['session_action_detail'].isna().sum():,}")
 print("\nTop 10 häufigste Werte:")
-df_clickstreams['session_action_detail'].value_counts().head(10)
+
+counts = df_clickstreams['session_action_detail'].value_counts().head(10)
+for val, count in counts.items():
+    pct = (count / len(df_clickstreams) * 100)
+    print(f"'{val}' - {count:,} - {pct:.2f}%")
 
 # %%
 # session_device_type
 print("=== session_device_type ===")
 print(f"Eindeutige Werte: {df_clickstreams['session_device_type'].nunique()}")
 print(f"Fehlende Werte: {df_clickstreams['session_device_type'].isna().sum():,}")
-print("\nWertverteilung:")
-df_clickstreams['session_device_type'].value_counts(dropna=False)
+print("\nTop 10 häufigste Werte:")
+
+counts = df_clickstreams['session_device_type'].value_counts().head(10)
+for val, count in counts.items():
+    pct = (count / len(df_clickstreams) * 100)
+    print(f"'{val}' - {count:,} - {pct:.2f}%")
+
+# %% [markdown]
+# # 6. Zeitanalyse
 
 # %%
 # time_passed_in_seconds
@@ -177,11 +222,82 @@ print(f"Mittelwert: {time_col.mean():.2f}")
 print(f"Median: {time_col.median():.2f}")
 print(f"Standardabweichung: {time_col.std():.2f}")
 
-extreme_time = time_col > 1000000  # > 11 Tage
-print(f"\n⚠️ Extreme Werte (> 1.000.000 Sekunden / 11+ Tage): {extreme_time.sum():,}")
+extreme_time = time_col > 1800  # > 30 Minuten
+print(f"\nUnrealistische Werte (> 30 Minuten): {extreme_time.sum():,} ({(extreme_time.sum() / len(df_clickstreams) * 100):.2f}%)")
+
+zero_time = time_col == 0 # = 0 Sekunden
+print(f"Null-Werte (= 0 Sekunden): {zero_time.sum():,} ({(zero_time.sum() / len(df_clickstreams) * 100):.2f}%)")
 
 # %% [markdown]
-# ## 6. Fehlende Werte nach Bereinigung
+# Mehr als 30 Minuten Inaktivität innerhalb einer Sitzung sind ein unrealistischer Wert.
+#
+# Möglicherweise entstehen solche Werte, wenn ein Benutzer den Tab geöffnet lässt und weggeht, später zurückkehrt und die nächste Aktion ausführt. Es handelt sich dann eigentlich bereits um eine neue Sitzung.
+#
+# Daher fügen wir eine Spalte `is_new_session` hinzu, in der 1 steht, wenn `time_passed_in_seconds` größer als 30 Minuten ist, und 0, wenn sie kleiner ist.
+
+# %%
+df_clickstreams['is_new_session'] = extreme_time  # Markiere als neue Sitzung, wenn Zeit > 30 Minuten
+
+# %%
+# Detaillierte Analyse der Einträge mit time_passed_in_seconds == 0
+df_zero_time = df_clickstreams[time_col == 0]
+
+print("=== session_action ===")
+print(f"Eindeutige Werte: {df_zero_time['session_action'].nunique()}")
+print(f"Fehlende Werte: {df_zero_time['session_action'].isna().sum():,}")
+print("\nTop 10 häufigste Werte:")
+
+counts = df_zero_time['session_action'].value_counts().head(10)
+for val, count in counts.items():
+    pct = (count / len(df_zero_time) * 100)
+    print(f"'{val}' - {count:,} - {pct:.2f}%")
+
+print("\n=== session_action_type ===")
+print(f"Eindeutige Werte: {df_zero_time['session_action_type'].nunique()}")
+print(f"Fehlende Werte: {df_zero_time['session_action_type'].isna().sum():,}")
+print("\nTop 10 häufigste Werte:")
+
+counts = df_zero_time['session_action_type'].value_counts().head(10)
+for val, count in counts.items():
+    pct = (count / len(df_zero_time) * 100)
+    print(f"'{val}' - {count:,} - {pct:.2f}%")
+
+print("\n=== session_action_detail ===")
+print(f"Eindeutige Werte: {df_zero_time['session_action_detail'].nunique()}")
+print(f"Fehlende Werte: {df_zero_time['session_action_detail'].isna().sum():,}")
+print("\nTop 10 häufigste Werte:")  
+
+counts = df_zero_time['session_action_detail'].value_counts().head(10)
+for val, count in counts.items():
+    pct = (count / len(df_zero_time) * 100)
+    print(f"'{val}' - {count:,} - {pct:.2f}%")
+
+print("\n=== session_device_type ===")
+print(f"Eindeutige Werte: {df_zero_time['session_device_type'].nunique()}")
+print(f"Fehlende Werte: {df_zero_time['session_device_type'].isna().sum():,}")
+print("\nTop 10 häufigste Werte:")  
+counts = df_zero_time['session_device_type'].value_counts().head(10)
+for val, count in counts.items():
+    pct = (count / len(df_zero_time) * 100)
+    print(f"'{val}' - {count:,} - {pct:.2f}%")
+
+# %% [markdown]
+# In `df_zero_time` wird eine Verteilung der Werte beobachtet, die sich vom `df_clickstreams` unterscheidet:
+#
+# - `session_action`:
+#     - 'pending': 7.54%, in `df_clickstreams` nicht in den Top-15;
+# - `session_action_type`:
+#     - 'message_post': 8.36%, in `df_clickstreams`: 0.82%;
+#     - 'booking_request': 7.52%, in `df_clickstreams`: 0.18%;
+# - `session_action_detail`:
+#     - 'message_post': 8.36%, in `df_clickstreams` nicht in den Top-15;
+#     - 'pending': 7.52%, in `df_clickstreams` nicht in den Top-15;
+#
+# Möglicherweise sind solche Zeilen automatische Einträge, die unmittelbar nach irgendwelcher anderen Aktion entstehen. 
+# Zum Beispiel gibt es insgesamt 4.333 Zeilen mit `session_action_type=booking_request` und `time_passed_in_seconds=0`, was einen erheblichen Anteil aller 18.773 Buchungen ausmacht. Daher wurde entschieden, die Zeilen mit `time_passed_in_seconds=0` zu behalten.
+
+# %% [markdown]
+# ## 7. Fehlende Werte nach Bereinigung
 
 # %%
 # Fehlende Werte nach Bereinigung
@@ -194,7 +310,13 @@ missing_df_after = pd.DataFrame({
     'Prozent': missing_pct_after.values
 })
 missing_df_after = missing_df_after.sort_values('Fehlend', ascending=False)
-display(missing_df_after)
+missing_df_after
+
+# %%
+# Löschen der Zeilen mit fehlenden session_user_id, session_action und time_passed_in_seconds
+df_clickstreams = df_clickstreams.dropna(subset=['session_user_id', 'session_action', 'time_passed_in_seconds'])
+
+del missing_df_after
 
 # %% [markdown]
 # ## 7. Visualisierung fehlender Werte mit missingno
@@ -213,27 +335,29 @@ plt.title('Vollständigkeit der Daten pro Spalte', fontsize=14, pad=20)
 plt.tight_layout()
 plt.show()
 
+# %%
+# Heatmap-Plot
+msno.heatmap(df_clickstreams, figsize=(12, 8))
+plt.title('Korrelation fehlender Werte', fontsize=14, pad=20)
+plt.tight_layout()
+plt.show()
+
 # %% [markdown]
 # ## 8. Zusammenfassung
 
 # %%
 print(f"Ursprüngliche Anzahl der Zeilen: {rows_initial:,}")
 print(f"Finale Anzahl der Zeilen: {len(df_clickstreams):,}")
+print(f"Entfernte Zeilen gesamt: {rows_initial - len(df_clickstreams)} ({((rows_initial - len(df_clickstreams)) / rows_initial * 100):.2f}%)")
 print(f"Anzahl der Spalten: {len(df_clickstreams.columns)}")
 
 print("\nDurchgeführte Bereinigungen:")
-print("1. ✅ '-unknown-' in session_action_type durch NaN ersetzt")
-print("2. ✅ '-unknown-' in session_action_detail durch NaN ersetzt")
-print("3. ✅ '-unknown-' in session_device_type durch NaN ersetzt")
-
-print("\nLegitime NaN-Werte (keine Bereinigung notwendig):")
-print("- NaN in session_action_type und session_action_detail: Technische Anfragen")
-
-print("\nDatentypen:")
-df_clickstreams.info()
+print("1. Duplikate entfernt;")
+print("2. `-unknown-` in `session_action_type`, `session_action_detail` und `session_device_type` durch NaN ersetzt;")
+print("3. Zeilen mit fehlenden `session_user_id`, `session_action` und `time_passed_in_seconds` entfernt.")
 
 # %%
 # Export der bereinigten Daten
-df_clickstreams.to_parquet('data/clickstreams-filtered.parquet', index=False)
-print("Bereinigte Daten erfolgreich in 'data/clickstreams-filtered.parquet' exportiert")
+df_clickstreams.to_parquet('data/clickstreams_filtered.parquet', index=False)
+print("Bereinigte Daten erfolgreich in 'data/clickstreams_filtered.parquet' exportiert")
 

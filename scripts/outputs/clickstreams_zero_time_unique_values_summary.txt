@@ -1,0 +1,61 @@
+=== session_action ===
+Eindeutige Werte: 219
+Fehlende Werte: 4,705
+
+Top 10 häufigste Werte:
+'show' - 9,691 - 16.82%
+'pending' - 4,345 - 7.54%
+'personalize' - 3,244 - 5.63%
+'index' - 2,965 - 5.15%
+'ajax_refresh_subtotal' - 2,443 - 4.24%
+'click' - 2,068 - 3.59%
+'similar_listings' - 2,065 - 3.58%
+'search_results' - 1,771 - 3.07%
+'reviews' - 1,629 - 2.83%
+'update' - 1,498 - 2.60%
+
+=== session_action_type ===
+Eindeutige Werte: 8
+Fehlende Werte: 12,283
+
+Top 10 häufigste Werte:
+'view' - 12,258 - 21.28%
+'data' - 10,937 - 18.98%
+'click' - 9,509 - 16.50%
+'message_post' - 4,814 - 8.36%
+'booking_request' - 4,333 - 7.52%
+'submit' - 3,357 - 5.83%
+'partner_callback' - 123 - 0.21%
+'booking_response' - 1 - 0.00%
+
+=== session_action_detail ===
+Eindeutige Werte: 124
+Fehlende Werte: 12,283
+
+Top 10 häufigste Werte:
+'message_post' - 4,814 - 8.36%
+'pending' - 4,333 - 7.52%
+'p3' - 4,272 - 7.41%
+'view_search_results' - 4,250 - 7.38%
+'wishlist_content_update' - 3,244 - 5.63%
+'user_profile' - 2,452 - 4.26%
+'change_trip_characteristics' - 2,443 - 4.24%
+'similar_listings' - 2,065 - 3.58%
+'user_social_connections' - 1,384 - 2.40%
+'listing_reviews' - 1,355 - 2.35%
+
+=== session_device_type ===
+Eindeutige Werte: 12
+Fehlende Werte: 1,184
+
+Top 10 häufigste Werte:
+'Mac Desktop' - 20,650 - 35.84%
+'Windows Desktop' - 15,864 - 27.53%
+'iPhone' - 10,463 - 18.16%
+'Android Phone' - 4,311 - 7.48%
+'iPad Tablet' - 3,682 - 6.39%
+'Tablet' - 590 - 1.02%
+'Android App Unknown Phone/Tablet' - 513 - 0.89%
+'Linux Desktop' - 164 - 0.28%
+'Chromebook' - 155 - 0.27%
+'iPodtouch' - 34 - 0.06%
