@@ -18,15 +18,6 @@ venv/
 .vscode/
 .idea/
 
-# Generated outputs (except markdown documentation)
-scripts/outputs/*.png
-scripts/outputs/*.jpg
-scripts/outputs/*.jpeg
-scripts/outputs/*.csv
-
-# Keep markdown files in outputs
-!scripts/outputs/*.md
-
 # OS
 .DS_Store
 Thumbs.db
