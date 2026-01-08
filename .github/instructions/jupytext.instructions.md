@@ -4,8 +4,8 @@ applyTo: "EDA.py"
 
 # Rules for Jupytext Percent Format (Main Analysis File)
 
-1.  **EDIT THIS FILE DIRECTLY.** This is the source file for the main Jupyter Notebook (`EDA.ipynb`).
-2.  **Syncing:** Changes here will automatically sync to `EDA.ipynb` via Jupytext.
+1.  **EDIT THIS FILE DIRECTLY.** This is the source file for the main Jupyter Notebook file having the same name.
+2.  **Syncing:** Changes here will automatically sync to the main file via Jupytext.
 3.  **Format:**
     * Use `# %%` to denote code cell boundaries.
     * Use `# %% [markdown]` for markdown cells.

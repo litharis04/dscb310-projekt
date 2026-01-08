@@ -28,16 +28,23 @@ Users can book trips online via the platform. The dataset consists of several su
 
 2. **geo_info.csv** – Data about destination countries
 3. **statistics.csv** – Population statistics of destination countries
+4. **clickstreams.csv** – Website session logs
+   - `session_user_id`: Linked to the 'user_id' column in the user table
+   - `session_action`: Action performed in the session
+   - `session_action_type`: Type of action
+   - `session_action_detail`: Action detail
+   - `session_device_type`: Device type of the session
+   - `time_passed_in_seconds`: Elapsed time in seconds
 
 # Workflow Rules
 
 The .csv files described above are the input for analysis. They are located in the `data/` folder.
 
 **Data Analysis Process:**
-1.  **Script Generation:** When analysis is requested, write Python scripts and save them in the `scripts/` folder. This folder may contain legacy scripts from previous analyses. Each script should focus on a specific task or question.
-2.  **Output Generation:** Save the outputs of these scripts (text logs, summaries, CSVs) in the `scripts/outputs/` folder in .md or .csv format. This folder may contain legacy outputs from previous analyses. 
-3.  **Visualizations:** If visualization is requested, create plots using `matplotlib`, `plotly` or `seaborn` and **SAVE** them to `scripts/outputs/`. **NEVER** use `plt.show()` or interactive display commands in those sctipts, as they will freeze the headless environment.
-4.  **Refinement Loop:** Use the outputs from the `scripts/outputs/` folder to check your results. If the results are incomplete or the script fails, read the error log or output, refine the script in `scripts/`, and run it again.
-5.  **Documentation:** Once the analysis or visualization is complete and answers the question, document the purpose of each script with short descriptions in the `scripts/README.md` file. Keep this file well-organized so that future team members can easily understand each script's purpose. No further documentation is needed beyond this README and the comments in the scripts or Jupytext files.
-6. **Migration:** Then copy the *logic* of the final, working code from the script into new cells in the Jupytext percent format .py file located in the root directory and specified in the prompt. Edit or consolidate existing cells as needed. Edit the code as needed so that it fits well within the notebook context (e.g., remove `plt.savefig`, use inline display).
+1.  **Script Generation (Analysis):** When data analysis or processing is requested, write Python scripts and save them in the `scripts/` folder. Each script should focus on a specific analytical task.
+2.  **Output Generation:** Save the outputs of these analysis scripts (text logs, summaries, CSVs) in the `scripts/outputs/` folder in .md or .csv format. Use these to verify your results.
+3.  **Visualizations:** If visualization is requested, write the code **directly** into the Jupytext percent format .py file in the root directory. **DO NOT** save plots as files in `scripts/outputs/` and **DO NOT** use the `scripts/` folder for visualization-only code.
+4.  **Refinement Loop (Analysis):** Use the outputs from the `scripts/outputs/` folder to check the results of your analysis scripts. If results are incomplete or the script fails, refine it in `scripts/` and run again.
+5.  **Documentation:** Document the purpose of each analysis script from the `scripts/` folder with short descriptions in the `scripts/README.md` file.
+6.  **Migration & Integration:** Once analysis is verified via scripts, copy the *logic* into new cells in the Jupytext percent format .py file in the root directory. For visualization tasks, implement the code directly in that Jupytext file, ensuring it fits the notebook context (e.g., use inline display).
 7.  **Formatting:** Ensure that the code added to final .py file follows the **Jupytext percent format** (using `# %%` separators). All comments and outputs should be in German. All variable names should be in English.
