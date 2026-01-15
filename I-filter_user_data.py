@@ -14,6 +14,9 @@
 # ---
 
 # %%
+# TO DO: больше комментариев и описаний в Markdown
+
+# %%
 import numpy as np
 import pandas as pd
 import missingno as msno
@@ -28,11 +31,12 @@ from IPython.display import display
 # 2. Prüfung und Entfernung von Duplikaten
 # 3. Konvertierung von Datumsangaben
 # 4. Prüfung und Korrektur der Datumsreihenfolge
-# 5. Bereinigung von user_gender
+# 5. Analyse von user_gender
 # 6. Filterung unrealistischer Altersangaben
 # 7. Prüfung eindeutiger Werte und seltener Einträge
 # 8. Analyse der Abhängigkeit zwischen first_booking_date und destination_country
 # 9. Visualisierung fehlender Werte
+# 10. Zusammenfassung
 
 # %% [markdown]
 # ## 1. Daten laden und allgemeine Inspektion
@@ -48,20 +52,19 @@ print(f"Anzahl der Spalten: {len(df_user.columns)}")
 print(f"\nSpalten: {list(df_user.columns)}")
 
 # %%
-df_user.head()
+df_user.head(10)
 
 # %%
 df_user.info()
 
 # %%
-# Grundlegende Statistiken
 df_user.describe()
 
 # %% [markdown]
 # ## 2. Prüfung auf Duplikate
 
 # %%
-# Duplikate prüfen
+# Ganze Zeilen
 num_duplicates = df_user.duplicated().sum()
 print(f"Anzahl der Duplikate: {num_duplicates}")
 
@@ -73,8 +76,11 @@ if num_duplicates > 0:
     df_user = df_user.drop_duplicates()
     print(f"\n{num_duplicates} Duplikate wurden entfernt")
     print(f"Neue Anzahl der Zeilen: {len(df_user)}")
-else:
-    print("Keine Duplikate gefunden")
+
+# %%
+# Nur user_id
+num_duplicates_user_id = df_user['user_id'].duplicated().sum()
+print(f"\nAnzahl der Duplikate in 'user_id': {num_duplicates_user_id}")
 
 # %% [markdown]
 # ## 3. Konvertierung von Datumsangaben
@@ -148,24 +154,19 @@ else:
     print("Keine Fehler in der Datumsreihenfolge gefunden")
 
 # %% [markdown]
-# ## 5. Bereinigung von user_gender
-#
-# Zulässige Werte: 'female', 'male', 'other', NaN
-#
-# Zunächst Analyse der ursprünglichen Werte, dann Bereinigung.
+# ## 5. Analyse von user_gender
 
 # %%
 # Analyse der ursprünglichen Werte in user_gender
 print("Ursprüngliche eindeutige Werte in user_gender:")
 print(df_user['user_gender'].value_counts(dropna=False))
-print()
+
+# %% [markdown]
+# Der Wert `-unknown-` wird beibehalten, da er die Informationen liefern könnte, dass der Nutzer sein Geschlecht absichtlich nicht angegeben hat.
 
 # %%
 # Normalisierung: Groß-/Kleinschreibung vereinheitlichen
 df_user['user_gender'] = df_user['user_gender'].str.lower()
-
-# Ungültige Werte auf NaN setzen
-df_user['user_gender'] = df_user['user_gender'].replace('-unknown-', np.nan)
 
 print("\nBereinigte Werte:")
 print(df_user['user_gender'].value_counts(dropna=False))
@@ -191,8 +192,6 @@ print(f"Anzahl der Zeilen mit unrealistischem Alter: {num_invalid_age}")
 print(f"  - Alter < 18: {age_too_young.sum()}")
 print(f"  - Alter > 90: {age_too_old.sum()}")
 
-
-
 # %%
 print(f"\nBeispiele für unrealistische Altersangaben:")
 display(df_user[invalid_age][['user_id', 'user_age', 'account_created_date']].head())
@@ -209,45 +208,61 @@ print(df_user['user_age'].describe())
 
 # %% [markdown]
 # ## 7. Prüfung eindeutiger Werte in Textspalten
-#
-# Seltene Werte (< 10 Vorkommen) werden auf mögliche Tippfehler untersucht.
 
 # %%
-# Zu prüfende Textspalten
-text_columns = [
-    'user_gender', 'signup_platform', 'signup_process', 'user_language',
-    'marketing_channel', 'marketing_provider', 'first_tracked_affiliate',
-    'signup_application', 'first_device', 'first_web_browser', 'destination_country'
-]
+# Definiere die zu analysierenden Spalten
+columns_to_analyze = ['user_gender', 'signup_platform', 'signup_process', 'user_language', 
+                      'marketing_channel', 'marketing_provider', 'first_tracked_affiliate',
+                      'signup_application', 'first_device', 'first_web_browser', 'destination_country']
 
-for col in text_columns:
-    print(f"\n{col}:")
-    
-    counts = df_user[col].value_counts(dropna=False)
-    print(f"Anzahl eindeutiger Werte: {len(counts)}")
-    
-    # Seltene Werte (< 10 Vorkommen)
-    rare_values = counts[counts < 10]
-    
-    if len(rare_values) > 0:
-        print(f"Seltene Werte (< 10 Vorkommen): {len(rare_values)}")
-        print("\nTop 10 seltene Werte:")
-        for value, count in rare_values.head(10).items():
-            print(f"  - '{value}': {count}")
-    else:
-        print("Keine seltenen Werte gefunden")
-    
-    # Top 10 häufigste Werte
-    print(f"\nTop 10 häufigste Werte:")
-    for value, count in counts.head(10).items():
-        percentage = (count / len(df_user)) * 100
-        print(f"  - '{value}': {count} ({percentage:.2f}%)")
-    print("-" * 80)
+# Erstelle den Inhalt der Datei
+print("Zusammenfassung der eindeutigen Werte pro Spalte in df_user_filtered")
+print("=" * 60)
+print("")
+
+for column in columns_to_analyze:
+    if column in df_user.columns:
+        # Zähle eindeutige Werte und deren Häufigkeiten
+        value_counts = df_user[column].value_counts()
+        total_count = len(df_user)
+        
+        print(f"Spalte: {column}")
+        print(f"Anzahl eindeutiger Werte: {len(value_counts)}")
+        print("Wert - Anzahl - Prozent")
+        
+        for value, count in value_counts.items():
+            percentage = (count / total_count) * 100
+            print(f"'{value}' - {count} - {percentage:.2f}%")
+        
+        # Füge NaN-Zählung hinzu
+        nan_count = df_user[column].isna().sum()
+        if nan_count > 0:
+            nan_percentage = (nan_count / total_count) * 100
+            print(f"NaN - {nan_count} - {nan_percentage:.2f}%")
+        
+        print("")
+        print("-" * 60)
+        print("")
 
 # %%
-# Bereinigung von first_web_browser
-print(f"Zeilen mit unbekanntem first_web_browser: {(df_user['first_web_browser'] == '-unknown-').sum()}")
-df_user['first_web_browser'] = df_user['first_web_browser'].replace('-unknown-', np.nan)
+# Zähle die Häufigkeit jedes Wertes in 'first_web_browser'
+browser_counts = df_user['first_web_browser'].value_counts()
+
+# Identifiziere Werte mit Häufigkeit < 500
+rare_browsers = browser_counts[browser_counts < 500].index.tolist()
+
+# Ersetze diese Werte durch 'Other'
+df_user['first_web_browser'] = df_user['first_web_browser'].replace(rare_browsers, 'Other')
+
+# %%
+# Zähle die Häufigkeit jedes Wertes in 'marketing_provider'
+provider_counts = df_user['marketing_provider'].value_counts()
+
+# Identifiziere Werte mit Häufigkeit < 100
+rare_providers = provider_counts[provider_counts < 100].index.tolist()
+
+# Ersetze diese Werte durch 'other'
+df_user['marketing_provider'] = df_user['marketing_provider'].replace(rare_providers, 'other')
 
 # %% [markdown]
 # ## 8. Analyse der Abhängigkeit: first_booking_date ↔ destination_country
@@ -302,10 +317,21 @@ print(f"  - Zeilen mit destination_country = 'NDF': {(df_user['destination_count
 # ## 9. Visualisierung fehlender Werte
 
 # %%
+df_nan_analysis = df_user.copy()
+
+# Bereinigung von user_gender
+print(f"Zeilen mit unbekanntem user_gender: {(df_nan_analysis['user_gender'] == '-unknown-').sum()}")
+df_nan_analysis['user_gender'] = df_nan_analysis['user_gender'].replace('-unknown-', np.nan)
+
+# Bereinigung von first_web_browser
+print(f"Zeilen mit unbekanntem first_web_browser: {(df_nan_analysis['first_web_browser'] == '-unknown-').sum()}")
+df_nan_analysis['first_web_browser'] = df_nan_analysis['first_web_browser'].replace('-unknown-', np.nan)
+
+# %%
 # Fehlende Werte pro Spalte
 print("Fehlende Werte pro Spalte:\n")
-missing_values = df_user.isnull().sum()
-missing_percent = round((missing_values / len(df_user)) * 100, 2)
+missing_values = df_nan_analysis.isnull().sum()
+missing_percent = round((missing_values / len(df_nan_analysis)) * 100, 2)
 
 missing_df = pd.DataFrame({
     'Spalte': missing_values.index,
@@ -323,25 +349,27 @@ else:
 # Visualisierung mit missingno
 
 # Matrix-Plot
-msno.matrix(df_user, sparkline=False, figsize=(12, 6))
+msno.matrix(df_nan_analysis, sparkline=False, figsize=(12, 6))
 plt.title('Matrix fehlender Werte in user.csv', fontsize=14, pad=20)
 plt.tight_layout()
 plt.show()
     
 # Bar-Plot
-msno.bar(df_user, figsize=(12, 6))
+msno.bar(df_nan_analysis, figsize=(12, 6))
 plt.title('Vollständigkeit der Daten pro Spalte', fontsize=14, pad=20)
 plt.tight_layout()
 plt.show()
     
 # Heatmap-Plot
-msno.heatmap(df_user, figsize=(12, 8))
+msno.heatmap(df_nan_analysis, figsize=(12, 8))
 plt.title('Korrelation fehlender Werte', fontsize=14, pad=20)
 plt.tight_layout()
 plt.show()
 
+del df_nan_analysis
+
 # %% [markdown]
-# ## Zusammenfassung der Datenbereinigung
+# ## 10. Zusammenfassung
 #
 # Nach allen Bereinigungsschritten:
 
@@ -354,7 +382,54 @@ print(f"Anzahl der Spalten: {len(df_user.columns)}")
 print(f"\nDatentypen:")
 df_user.info()
 
+# %% [markdown]
+# Speicherung der Analyse in txt-Datei:
+
 # %%
-# Exportieren
+# Definiere die zu analysierenden Spalten
+columns_to_analyze = ['user_gender', 'signup_platform', 'signup_process', 'user_language', 
+                      'marketing_channel', 'marketing_provider', 'first_tracked_affiliate',
+                      'signup_application', 'first_device', 'first_web_browser', 'destination_country']
+
+# Erstelle den Inhalt der Datei
+output_lines = ["Zusammenfassung der eindeutigen Werte pro Spalte in df_user_filtered"]
+output_lines.append("=" * 60)
+output_lines.append("")
+
+for column in columns_to_analyze:
+    if column in df_user.columns:
+        # Zähle eindeutige Werte und deren Häufigkeiten
+        value_counts = df_user[column].value_counts()
+        total_count = len(df_user)
+        
+        output_lines.append(f"Spalte: {column}")
+        output_lines.append(f"Anzahl eindeutiger Werte: {len(value_counts)}")
+        output_lines.append("Wert - Anzahl - Prozent")
+        
+        for value, count in value_counts.items():
+            percentage = (count / total_count) * 100
+            output_lines.append(f"'{value}' - {count} - {percentage:.2f}%")
+        
+        # Füge NaN-Zählung hinzu
+        nan_count = df_user[column].isna().sum()
+        if nan_count > 0:
+            nan_percentage = (nan_count / total_count) * 100
+            output_lines.append(f"NaN - {nan_count} - {nan_percentage:.2f}%")
+        
+        output_lines.append("")
+        output_lines.append("-" * 60)
+        output_lines.append("")
+
+# Speichere in Datei
+output_file_path = 'scripts/outputs/df_user_filtered_unique_values_summary.txt'
+with open(output_file_path, 'w', encoding='utf-8') as f:
+    f.write('\n'.join(output_lines))
+
+print(f"Datei erfolgreich gespeichert: {output_file_path}")
+
+# %% [markdown]
+# Exportieren:
+
+# %%
 df_user.to_parquet('data/user_filtered.parquet', index=False)
 print("df_user erfolgreich in 'data/user_filtered.parquet' exportiert")

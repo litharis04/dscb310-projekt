@@ -2,8 +2,9 @@ Zusammenfassung der eindeutigen Werte pro Spalte in df_user_filtered
 ============================================================
 
 Spalte: user_gender
-Anzahl eindeutiger Werte: 3
+Anzahl eindeutiger Werte: 4
 Wert - Anzahl - Prozent
+'-unknown-' - 94949 - 45.06%
 'male' - 61895 - 29.37%
 'female' - 53599 - 25.44%
 'other' - 278 - 0.13%
@@ -88,11 +89,11 @@ Wert - Anzahl - Prozent
 ------------------------------------------------------------
 
 Spalte: marketing_provider
-Anzahl eindeutiger Werte: 18
+Anzahl eindeutiger Werte: 13
 Wert - Anzahl - Prozent
 'direct' - 135738 - 64.42%
 'google' - 50957 - 24.18%
-'other' - 12400 - 5.88%
+'other' - 12505 - 5.93%
 'craigslist' - 3406 - 1.62%
 'bing' - 2299 - 1.09%
 'facebook' - 2253 - 1.07%
@@ -103,11 +104,6 @@ Wert - Anzahl - Prozent
 'gsp' - 449 - 0.21%
 'meetup' - 344 - 0.16%
 'email-marketing' - 163 - 0.08%
-'naver' - 51 - 0.02%
-'baidu' - 29 - 0.01%
-'yandex' - 17 - 0.01%
-'wayn' - 7 - 0.00%
-'daum' - 1 - 0.00%
 
 ------------------------------------------------------------
 
@@ -121,6 +117,7 @@ Wert - Anzahl - Prozent
 'product' - 1529 - 0.73%
 'marketing' - 139 - 0.07%
 'local ops' - 33 - 0.02%
+NaN - 5990 - 2.84%
 
 ------------------------------------------------------------
 
@@ -150,11 +147,12 @@ Wert - Anzahl - Prozent
 ------------------------------------------------------------
 
 Spalte: first_web_browser
-Anzahl eindeutiger Werte: 8
+Anzahl eindeutiger Werte: 9
 Wert - Anzahl - Prozent
 'Chrome' - 63045 - 29.92%
 'Safari' - 44502 - 21.12%
 'Firefox' - 33186 - 15.75%
+'-unknown-' - 27056 - 12.84%
 'IE' - 20760 - 9.85%
 'Mobile Safari' - 19053 - 9.04%
 'Chrome Mobile' - 1251 - 0.59%
